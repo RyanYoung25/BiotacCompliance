@@ -20,9 +20,9 @@ RSR_LOWER = 0
 REP_UPPER = -1.57
 REP_LOWER = 0
 
-INCREMENT = .02 # This number is untested
-UDTHRESHOLD = 1000 #might need to play around with this
-LRTHRESHOLD = 1200
+INCREMENT = .03
+UDTHRESHOLD = 1200
+LRTHRESHOLD = 1400
 '''
 This is a demo class. It basically when created will handle
 the demo. Every time it gets a biotac_pub message it goes through
@@ -50,8 +50,8 @@ class demo:
         data = handData.bt_data
         electrodes = data[0].electrode_data
         upCheck = int((electrodes[6] + electrodes[7] + electrodes[8] + electrodes[9]) / 4)
-        leftCheck = int((electrodes[10] + electrodes[13] + electrodes[15]) / 3 )
-        rightCheck = int((electrodes[0] + electrodes[3] + electrodes[5]) / 3)
+        rightCheck = int((electrodes[10] + electrodes[13] + electrodes[15]) / 3 )
+        leftCheck = int((electrodes[0] + electrodes[3] + electrodes[5]) / 3)
         downCheck = int((electrodes[17] + electrodes[18]) / 2)
         self.count += 1
         if self.count == 10:
