@@ -16,12 +16,13 @@ from biotac_sensors.msg import *
 
 ID_NUM = 14
 RSR_UPPER = -1.3
-RSR_LOWER = .1
+RSR_LOWER = 0
 REP_UPPER = -1.57
 REP_LOWER = 0
 
-INCREMENT = .05 # This number is untested
-THRESHOLD = 700 #might need to play around with this
+INCREMENT = .02 # This number is untested
+UDTHRESHOLD = 1000 #might need to play around with this
+LRTHRESHOLD = 1200
 '''
 This is a demo class. It basically when created will handle
 the demo. Every time it gets a biotac_pub message it goes through
@@ -31,9 +32,7 @@ class demo:
     
 
     def __init__(self):
-        self.INCREMENT = .05
-        self.MAX = 1
-        rospy.init_node("BioTacDemo")
+        rospy.init_node("BiotacCompliance")
         rospy.Subscriber("biotac_pub", BioTacHand, self.update)
         self.pub = rospy.Publisher("Maestro/Control", MaestroCommand)
         
@@ -54,19 +53,25 @@ class demo:
         leftCheck = int((electrodes[10] + electrodes[13] + electrodes[15]) / 3 )
         rightCheck = int((electrodes[0] + electrodes[3] + electrodes[5]) / 3)
         downCheck = int((electrodes[17] + electrodes[18]) / 2)
+        self.count += 1
+        if self.count == 10:
 
-        if upCheck < THRESHOLD:
-            self.moveUp()
-        elif downCheck < THRESHOLD:
-            self.moveDown()
-        if leftCheck < THRESHOLD:
-            self.moveLeft()
-        elif rightCheck < THRESHOLD:
-            self.moveRight()
-        count += 1
-        if count == 10:
-            self.pub.publish("RSP REP", "position position", str(self.RSP) + " " + str(self.REP), "", ID_NUM)
-            count = 0
+            if upCheck < UDTHRESHOLD:
+                self.moveUp()
+            elif downCheck < UDTHRESHOLD:
+                self.moveDown()
+            if leftCheck < LRTHRESHOLD:
+                self.moveLeft()
+            elif rightCheck < LRTHRESHOLD:
+                self.moveRight()
+
+            print "Right: " + str(rightCheck)
+            print "Left: " + str(leftCheck)
+            print "Up: " + str(upCheck)
+            print "Down: " + str(downCheck)
+
+            self.pub.publish("RSR REP", "position position", str(self.RSR) + " " + str(self.REP), "", ID_NUM)
+            self.count = 0
 
     # Bend the elbow pitch
     def moveLeft(self):
@@ -82,20 +87,19 @@ class demo:
 
     # Move the shoulder roll out
     def moveUp(self):
-        temp = self.RSP - INCREMENT
-        if(temp > RSP_UPPER):
-            self.RSP = temp
+        temp = self.RSR - INCREMENT
+        if(temp > RSR_UPPER):
+            self.RSR = temp
 
     # Move the shoulder roll in
     def moveDown(self):
-        temp = self.RSP + INCREMENT
-        if(temp < REP_LOWER):
-            self.RSP = temp
+        temp = self.RSR + INCREMENT
+        if(temp < RSR_LOWER):
+            self.RSR = temp
 
 
     def exit(self):
-        self.pub.publish("REP", "position", "0", "", ID_NUM)
-        self.pub.publish("RSR", "position", "0", "", ID_NUM)
+        self.pub.publish("RSR REP", "position position", "0 0", "", ID_NUM)
         
 
 
