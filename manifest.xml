@@ -1,0 +1,16 @@
+<package>
+  <description brief="BiotacCompliance">
+
+     BiotacCompliance
+
+  </description>
+  <author>Ryan</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/BiotacCompliance</url>
+  <depend package="biotac_sensors"/>
+  <depend package="maestro"/>
+
+</package>
+
+
