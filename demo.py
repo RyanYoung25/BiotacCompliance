@@ -11,10 +11,9 @@ import roslib; roslib.load_manifest('BiotacCompliance')
 import rospy
 import time
 import sys
-from hubomsg.msg import *
+from maestor import *
 from biotac_sensors.msg import *
 
-ID_NUM = 14
 RSR_UPPER = -1.3
 RSR_LOWER = 0
 REP_UPPER = -1.57
@@ -34,7 +33,7 @@ class demo:
     def __init__(self):
         rospy.init_node("BiotacCompliance")
         rospy.Subscriber("biotac_pub", BioTacHand, self.update)
-        self.pub = rospy.Publisher("Maestro/Control", MaestroCommand)
+        rospy.wait_for_service("setProperties")
         
         self.REP = 0
         self.RSR = 0
@@ -42,7 +41,14 @@ class demo:
         self.count = 0
         rospy.on_shutdown(self.exit)
         rospy.spin()
-    
+
+    def setProperties(self, names, properties, values):
+    try:
+        service = rospy.ServiceProxy("setProperties", setProperties)
+        service(names, properties, values)
+    except rospy.ServiceException, e:
+        print "Service call failed: %s"%e
+
     '''
     The heart of the demo 
     '''
@@ -70,7 +76,7 @@ class demo:
             print "Up: " + str(upCheck)
             print "Down: " + str(downCheck)
 
-            self.pub.publish("RSR REP", "position position", str(self.RSR) + " " + str(self.REP), "", ID_NUM)
+            self.setProperties("RSR REP", "position position", str(self.RSR) + " " + str(self.REP))
             self.count = 0
 
     # Bend the elbow pitch
@@ -99,7 +105,7 @@ class demo:
 
 
     def exit(self):
-        self.pub.publish("RSR REP", "position position", "0 0", "", ID_NUM)
+        self.setProperties("RSR REP", "position position", "0 0")
         
 
 

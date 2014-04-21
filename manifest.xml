@@ -9,7 +9,7 @@
   <review status="unreviewed" notes=""/>
   <url>http://ros.org/wiki/BiotacCompliance</url>
   <depend package="biotac_sensors"/>
-  <depend package="maestro"/>
+  <depend package="maestor"/>
 
 </package>
 
