@@ -11,7 +11,7 @@ import roslib; roslib.load_manifest('BiotacCompliance')
 import rospy
 import time
 import sys
-from maestor import *
+from maestor.srv import *
 from biotac_sensors.msg import *
 
 RSR_UPPER = -1.3
@@ -43,11 +43,11 @@ class demo:
         rospy.spin()
 
     def setProperties(self, names, properties, values):
-    try:
-        service = rospy.ServiceProxy("setProperties", setProperties)
-        service(names, properties, values)
-    except rospy.ServiceException, e:
-        print "Service call failed: %s"%e
+        try:
+            service = rospy.ServiceProxy("setProperties", setProperties)
+            service(names, properties, values)
+        except rospy.ServiceException, e:
+            print "Service call failed: %s"%e
 
     '''
     The heart of the demo 
