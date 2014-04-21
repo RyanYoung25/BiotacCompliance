@@ -19,7 +19,7 @@ RSR_LOWER = 0
 REP_UPPER = -1.57
 REP_LOWER = 0
 
-INCREMENT = .02 # This number is untested
+INCREMENT = .05 # This number is untested
 UDTHRESHOLD = 1000 #might need to play around with this
 LRTHRESHOLD = 1200
 '''
@@ -40,6 +40,7 @@ class demo:
 
         self.count = 0
         rospy.on_shutdown(self.exit)
+	self.setProperties("REP RSR", "velocity velocity", ".5 .5")
         rospy.spin()
 
     def setProperties(self, names, properties, values):
